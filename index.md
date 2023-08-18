@@ -11,8 +11,11 @@ hero:
       text: Markdown Examples
       link: /markdown-examples
     - theme: alt
-      text: API Examples
+      text: Examples
       link: /api-examples
+    - theme: alt
+      text: API Docs
+      link: /api-docs/modules
 
 features:
   - title: Feature A

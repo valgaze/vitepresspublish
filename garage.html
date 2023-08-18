@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>speedybot 🔧🤖</title>
+  <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+
+<body>
+  <div id="staticContent">
+    <h1 class="title">yay</h1>
+  </div>
+
+  <div id="garageContent" class="container mt-3" style="display: none;">
+    <div class="select">
+      <select v-model="ui._locale">
+        <option v-for="locale in ui.localeOpts" :value="locale" :selected="locale === ui._locale">{{ locale }}</option>
+      </select>
+    </div>
+
+    <h1 class=" title">{{locale('ui.title', 'speedybot-garage 🔧🤖')}}</h1>
+
+    <div class="tabs is-large">
+      <ul>
+        <li :class="{ 'is-active': isActive('token') }">
+          <a @click.prevent="selectTab('token')">{{locale('token.navLabel')}}</a>
+        </li>
+        <li :class="{ 'enabled': validToken, 'is-active': isActive('messages'), 'disabled':!validToken}">
+          <a @click.prevent="selectTab('messages')">📝 Send Messages</a>
+        </li>
+        <li v-if="ui.tabs.rooms.active" :class="{ 'enabled':validToken, 'is-active': isActive('rooms'), 'disabled':!validToken}">
+          <a @click.prevent="selectTab('rooms')">🏘 Rooms</a>
+        </li>
+        <li :class="{ 'enabled': validToken, 'is-active': isActive('webhooks'), 'disabled':!validToken}">
+          <a @click.prevent="selectTab('webhooks')">🪝 Webhooks</a>
+        </li>
+        <li :class="{ 'is-active': isActive('byob') }">
+          <a @click.prevent="selectTab('byob')">📚 Docs + Resources</a>
+        </li>
+      </ul>
+    </div>
+    <!--         <li :class="{ 'is-active': isActive('byob') }">
+          <a @click.prevent="selectTab('docs')">🤖 LLM/GPT-powered Bots</a>
+        </li> -->
+    <div class="tab-content">
+      <div id="token" v-show="isActive('token')">
+        <h3 class="subtitle" v-html="locale('token.subtitle')"></h3>
+        <div class="field">
+          <div class="control is-large" :class="{'is-loading':ui.loading}">
+            <input class="input is-large" type="text" :placeholder="locale('token.placeholder')" id="rootTokenRef" v-model="token" autofocus style="padding-right:5%;">
+          </div>
+        </div>
+
+        <!--         <div style="display:flex; justify-content:center;" v-if="ui.loading">
+          <div class="loader is-loading"></div>
+        </div> -->
+        <article class="message is-success" v-if="validToken">
+          <div class="message-body">
+            Token is valid 🎉
+          </div>
+        </article>
+
+        <article class="message is-danger" v-if="ui.badToken">
+          <div class="message-body" v-html="locale('token.error')">
+          </div>
+        </article>
+
+        <table class="table is-striped" v-if="validToken">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ userData.username}}</td>
+              <td><a :href="'webexteams://im?email=' + userData.email" target="_blank">{{userData.email}}</a></td>
+              <td><span class="tag is-info">{{ userData.type}}</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <div id="webhooks" v-show="isActive('webhooks')">
+        <h3 class="subtitle">Webhooks</h3>
+        <p>Webhooks-related content goes here.</p>
+
+        <div id="confirmation-modal" class="modal" :class="{'is-active': ui.tabs.webhooks.confirmDeleteActive}">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Destroy?</p>
+              <button class="delete" aria-label="close" @click="ui.tabs.webhooks.confirmDeleteActive = false" disabled></button>
+            </header>
+            <section class="modal-card-body">
+              <p>Are you sure you want to destroy all webhooks?</p>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-danger" @click="destroyWebhooks()">Yes, destroy all</button>
+              <button class="button" @click="ui.tabs.webhooks.confirmDeleteActive = false">Cancel</button>
+            </footer>
+          </div>
+        </div>
+
+        <div class="modal" :class="{ 'is-active': ui.tabs.webhooks.showModal }">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Register Webhook</p>
+              <button class="delete" aria-label="close" @click="ui.tabs.webhooks.showModal = false"></button>
+            </header>
+            <section class="modal-card-body">
+              <form :model="ui.tabs.webhooks.webhooksForm">
+                <div class="field">
+                  <label class="label">URL</label>
+                  <div class="control">
+                    <input class="input" v-model="ui.tabs.webhooks.webhooksForm.url" placeholder="https://username.abc.com/endpoint">
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">(optional) secret</label>
+                  <div class="control">
+                    <input class="input" v-model="ui.tabs.webhooks.webhooksForm.secret" placeholder="secret">
+                  </div>
+                </div>
+              </form>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button" @click="ui.tabs.webhooks.showModal = false">Cancel</button>
+              <button class="button is-primary" :disabled="!ui.tabs.webhooks.webhooksForm.url.length" @click="registerWebhook">Confirm</button>
+            </footer>
+          </div>
+        </div>
+
+        <button class="button is-info is-medium" @click="ui.tabs.webhooks.showModal = true">
+          <span>➕Add new webhook</span>
+        </button>
+
+        <button class="button is-info is-medium" @click="fetchSetWebhooks">
+          <span>🔄 Fetch Webhooks</span>
+        </button>
+
+        <button class="button is-danger is-medium" @click="ui.tabs.webhooks.confirmDeleteActive = true">
+          <span>🔥 Destroy webhooks</span>
+        </button>
+        <loading-spinner v-if="ui.tabs.webhooks.loading"></loading-spinner>
+        <table class="table is-striped is-fullwidth" v-else>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>URL</th>
+              <th>Resource</th>
+              <th>Delete ❌</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="webhook in ui.tabs.webhooks.webhookData">
+              <td>{{ webhook.name }}</td>
+              <td><a :href="webhook.targetUrl" target="_blank">{{ webhook.targetUrl }}</a></td>
+              <td>{{ webhook.resource }}</td>
+              <td>
+                <div style="cursor:pointer; transition:all 0.4s;text-align:center;" @click="deleteWebhook(webhook.id)">❌</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div id="rooms" v-show="isActive('rooms')">
+        <section class="section">
+
+          <div class="field is-grouped">
+            <p class="control is-expanded">
+              <input class="input is-medium" v-model="ui.tabs.rooms.search" type="text" placeholder="Start typing to filter by name or room" :disabled="ui.roomsList.length === 0" />
+            </p>
+            <p class="control">
+              <button class="button is-primary is-medium" @click="fetchSetRooms">
+                <span>🔄 Fetch Rooms</span>
+              </button>
+            </p>
+            <h3 class="subtitle" v-html="locale('rooms.subtitle')"></h3>
+          </div>
+
+          <loading-spinner v-if="!ui.roomsList.length"></loading-spinner>
+          <table class="table is-striped is-fullwidth" v-else>
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Room Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="room in filteredRoomsList" :key="room.id">
+                <td>{{ room.id }}</td>
+                <td>{{ room.title }}</td>
+                <td>{{ room.type }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </div>
+      <div id="messages" v-show="isActive('messages')">
+        <h3 class="subtitle">Send Messages</h3>
+        <article class="message is-danger" v-if="ui.tabs.messages.error">
+          <div class="message-body">
+            There was an error sending that message:
+            <pre>
+            ERROR: invalid bonkers
+            </pre>
+          </div>
+        </article>
+
+        <p>Send Messages-related content goes here.</p>
+
+        <form :model="ui.tabs.messages.form">
+          <search-dropdown :rooms-list="ui.roomsList" @room-selected="handleRoomSelected"></search-dropdown>
+          <div class="field">
+            <div class="tooltip is-tooltip-bottom" data-tooltip="RoomID, PersonId, or email address">
+              <label class="label">Destination (id)</label>
+            </div>
+            <div class="control">
+              <input class="input" type="text" v-model="ui.tabs.messages.form.destination" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Message Type</label>
+            <div class="field-body">
+              <div class="field is-horizontal">
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <label class="radio">
+                        <input type="radio" id="direct" name="form.messagetype" class="is-checkradio is-borderless" v-model="ui.tabs.messages.form.messageType" value="direct">
+                        Person Id/Email (direct)
+                      </label>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="control">
+                      <label class="radio">
+                        <input type="radio" id="group" name="form.messagetype" class="is-checkradio is-borderless" v-model="ui.tabs.messages.form.messageType" value="group">
+                        Room Id (group)
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary is-rounded" :disabled="!ui.tabs.messages.form.messageType || !ui.tabs.messages.form.destination">Send</button>
+            </div>
+            <div class="control">
+              <button class="button is-warning is-rounded" onclick="randomMessage()">Randomize Card</button>
+            </div>
+            <div class="control">
+              <label class="checkbox">
+                <input type="checkbox">Show Card Preview
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Content</label>
+            <div class="control">
+              <textarea class="textarea" placeholder="Enter text, an Adaptive Card, or JSON" v-model="ui.tabs.messages.form.payload"></textarea>
+            </div>
+          </div>
+
+          <!--           <hr />
+          <button class="button is-info">Send</button> -->
+
+        </form>
+        <!--         <span class="subtitle">Modifiers</span>
+        <span class="tag is-danger">Danger</span>
+        <span class="tag is-success">Success</span>
+ -->
+      </div>
+    </div>
+    <div id="byob" v-show="isActive('byob')">
+      <ul>
+
+        <li>webhooks</li>
+        <li>send message</li>
+        <li>docs/resources</li>
+        <li>build script: concat readme.md, index_raw.html</li>
+        <li>i18n (Hidi, Spanish) </li>
+
+      </ul>
+
+      <h3 class="subtitle">BYOB: Build Your Own Bot</h3>
+      <p>BYOB-related content goes here.</p>
+      <hr />
+
+      <table class="table is-striped is-bordered">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Name2</th>
+            <th>Name2</th>
+            <th>DELEtE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>name</td>
+            <td>name</td>
+            <td>name</td>
+            <td>
+              <div style="cursor:pointer; transition:all 0.4s;text-align:center;">❌</div>
+            </td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>name</td>
+            <td>name</td>
+            <td>
+              <div style="cursor:pointer; transition:all 0.4s">❌</div>
+            </td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>name</td>
+            <td>name</td>
+            <td>
+              <div style="cursor:pointer; transition:all 0.4s">❌</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr />
+      <span class="tag">My info</span>
+      <span class="tag is-info">My info</span>
+      <span class="tag is-primary">My info</span>
+      <span class="tag is-success">My info</span>
+      <span class="tag is-danger">My info</span>
+      <span class="tag is-warning">My info</span>
+      <div>
+        <span class="tag is-danger is-medium">My info</span>
+        <span class="tag is-danger is-large">My info</span>
+
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <p class="title">The title</p>
+          <p class="subtitle">The ret of it akdfjlak</p>
+        </div>
+      </div>
+
+      <div class="card is-info">
+        <div class="card-content">
+          <p class="title">Info card</p>
+          <p class="subtitle">I want this to update in real time as ppl mess w/ json</p>
+        </div>
+      </div>
+
+      <div class="notification">
+        <button class="delete"></button>
+        adkfj adfadfafj
+      </div>
+
+      <div class="notification is-primary">
+        <button class="delete"></button>
+        adkfj adfadfafj
+      </div>
+
+      <div class="notification is-info">
+        <button class="delete"></button>
+        adkfj adfadfafj
+      </div>
+      <article class="message is-danger">
+        <div class="message-body">
+          Token is INVALID 😥 (generate a new token and try again)
+        </div>
+      </article>
+      <article class="message is-success">
+        <div class="message-body">
+          A simple success alert—check it out!
+        </div>
+      </article>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    // URL handler
+    const urlParams = new URLSearchParams(window.location.search);
+    const garage = urlParams.get("garage") || 'OVERRIDE'
+    const __LOCALE = urlParams.get("locale") || 'en'
+    const gpt3 = urlParams.get('gpt3')
+    const gpt4 = urlParams.get("gpt4")
+    if (gpt3 !== null) {
+      window.location.href = 'https://docs.google.com/presentation/d/1m2pZfclAziqWrEJdebufyr4dtCydawMR_2ybg6TqO_U/edit#slide=id.g90656377a3_0_716'
+    }
+    if (gpt4 !== null) {
+      window.location.href = 'https://github.com/valgaze/speedybot-gpt4';
+    }
+
+    function fadeIn(element, duration) {
+      element.style.display = "block";
+      element.style.transition = `opacity ${duration}ms`;
+      element.style.opacity = 0;
+      setTimeout(() => {
+        element.style.opacity = 1;
+      }, 10);
+    }
+    if (garage !== null) {
+      document.getElementById("staticContent").style.display = "none";
+      const Loader = Vue.component("loading-spinner", {
+        template: `
+         <div style="display: flex; justify-content: center; align-items: center;">
+          <div class="loader is-loading is-size-1"></div>
+        </div>`
+      })
+      // Room searcher
+      const Dropdown = Vue.component("search-dropdown", {
+        // props: ["roomsList"],
+        props: {
+          roomsList: {
+            default: () => []
+          }
+        },
+        template: `
+    <div class="container">
+      <div class="field">
+        <label class="label">Recent Spaces</label>
+        <div class="control has-icons-right">
+          <input
+            @click="beer"
+            class="input"
+            type="text"
+            v-model="search"
+            @input="filter"
+            @blur="searchIsActive=false"
+            placeholder="Search Recent Rooms"
+            style="cursor:pointer;"
+          />
+{{selected}}
+          <span class="icon is-right">🔎</span>
+        </div>
+        <div
+          class="dropdown select-dropdown"
+          :class="{ 'is-active': searchIsActive}"
+        >
+          <div class="dropdown-menu">
+            <div class="dropdown-content">
+              <a
+                href="#"
+                v-for="item in filteredRooms"
+                :key="item.id"
+                class="dropdown-item"
+                @mousedown.prevent="selectRoom(item)"
+              >
+                <span>{{ item.title }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">
+                  {{ item.id.slice(0, 4) }}...
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+        data() {
+          return {
+            form: {
+              destination: ""
+            },
+            search: "",
+            searchIsActive: false,
+            filteredRooms: [],
+            selected: ""
+          };
+        },
+        watch: {
+          search() {
+            this.searchIsActive = !!this.search.length;
+          }
+        },
+        created() {
+          this.filteredRooms = this.roomsList;
+        },
+        methods: {
+          beer(a) {
+            this.searchIsActive = true;
+            this.filteredRooms = this.roomsList;
+          },
+          selectRoom(room) {
+            this.form.destination = room.id;
+            this.filteredRooms = [];
+            this.search = "";
+            this.searchIsActive = false;
+            this.$emit("room-selected", room);
+            this.search = room.title
+          },
+          roomsFetch() {
+            console.log("Refresh rooms list");
+          },
+          filter() {
+            if (!this.search) {
+              this.filteredRooms = this.roomsList;
+            } else {
+              const search = this.search.toLowerCase();
+              this.filteredRooms = this.roomsList.filter((room) =>
+                room.title.toLowerCase().includes(search)
+              );
+            }
+          }
+        }
+      });
+      // Speedybot Garage
+      const garageContent = new Vue({
+        el: '#garageContent',
+        watch: {
+          'ui.tabs.messages.form.destination'(value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isEmail = emailRegex.test(value);
+            if (isEmail) {
+              this.ui.tabs.messages.form.messageType = 'direct';
+            }
+          },
+          async token(val) {
+            if (!val.length) {
+              return this.validToken = false
+            }
+            this.validToken = false
+            this.ui.badToken = false
+            this.ui.loading = true
+            this.client.setToken(val)
+            const res = await this.validateToken(val)
+            const {
+              valid,
+              emails,
+              displayName,
+              type
+            } = res
+            this.validToken = valid
+            if (valid) {
+              const [email] = emails
+              this.userData = {
+                email,
+                username: displayName,
+                type
+              }
+              // head start on rooms
+              const rooms = await this.client.recentRooms()
+              this.ui.roomsList = rooms
+              await this.fetchSetWebhooks()
+            } else {
+              this.ui.badToken = true
+            }
+            this.ui.loading = false
+          }
+        },
+        beforeMount() {
+          this.setLocale(__LOCALE)
+          this.client = client()
+        },
+        computed: {
+          filteredRoomsList() {
+            return this.ui.roomsList.filter((r) =>
+              r.title.toLowerCase().includes(this.ui.tabs.rooms.search.toLowerCase())
+            );
+          },
+        },
+        data() {
+          return {
+            ui: {
+              tabs: {
+                rooms: {
+                  active: false,
+                  search: '',
+                },
+                webhooks: {
+                  loading: false,
+                  confirmDeleteActive: false,
+                  webhooksData: [],
+                  showModal: false,
+                  webhooksForm: {
+                    url: '',
+                    secret: ''
+                  },
+                },
+                messages: {
+                  status: {
+                    error: false,
+                  },
+                  form: {
+                    messageType: '',
+                    destination: '',
+                    payload: ''
+                  }
+                }
+              },
+              loading: false,
+              localeOpts: [
+                'ar',
+                'zh',
+                'de',
+                'es',
+                'en',
+                'fr',
+                'hi',
+                'ja',
+                'pt',
+                'ru',
+                'uk',
+                'ur'
+              ],
+              _localeCode: '',
+              _locale: {},
+              badToken: false,
+              webhooks: {},
+              roomsList: [{
+                  created: 1,
+                  title: "Room 1",
+                  id: "abcde1"
+                },
+                {
+                  created: 2,
+                  title: "Room 2",
+                  id: "abcde2"
+                },
+                {
+                  created: 3,
+                  title: "Room 3",
+                  id: "abcde3"
+                },
+              ],
+            },
+            client: null,
+            token: '',
+            userData: {
+              email: '',
+              username: '',
+              type: ''
+            },
+            validToken: false,
+            activeTab: 'token',
+          }
+        },
+        methods: {
+          onWebhookSubmit(a) {
+            const {
+              url,
+              secret
+            } = this.ui.tabs.webhooks.webhooksForm
+          },
+          locale(lookUp, fallback = '') {
+            return this.lookUp(this.ui._locale, lookUp, fallback)
+          },
+          lookUp(locale, lookup = '', fallback = '') {
+            let res = locale;
+            lookup.split(".").forEach((k) => {
+              if (res) {
+                res = res[k];
+              } else {
+                res = fallback;
+              }
+            });
+            return res ? res : fallback;
+          },
+          setLocale(locale) {
+            if (locale) {
+              this.ui._localeCode = 'hhh'
+              this.ui._locale = Object.assign(this.locale, locales()[locale] || 'en')
+            }
+          },
+          selectTab(tabId) {
+            this.activeTab = tabId;
+          },
+          isActive(tabName) {
+            return this.activeTab === tabName;
+          },
+          // Token
+          async validateToken(token) {
+            return this.client.validateToken(token)
+          },
+          handleRoomSelected(val) {
+            this.ui.tabs.messages.form.destination = val.id
+            this.ui.tabs.messages.form.messageType = val.type
+          },
+          // ROoms
+          async fetchSetRooms() {
+            this.ui.roomsList = []
+            const rooms = await this.client.recentRooms()
+            this.ui.roomsList = rooms
+          },
+          async deleteWebhook(id, skip = false) {
+            this.ui.tabs.webhooks.loading = true
+            await this.client.deleteWebhook(id)
+            if (!skip) {
+              await this.fetchSetWebhooks()
+            }
+            this.ui.tabs.webhooks.loading = false
+          },
+          async fetchSetWebhooks() {
+            this.$set(this.ui.tabs.webhooks, 'webhookData', []);
+            this.ui.tabs.webhooks.loading = true
+            const webhooks = await this.client.getWebhooks() || []
+            const list = webhooks.items.map(webhook => {
+              const {
+                id,
+                name,
+                resource,
+                targetUrl,
+              } = webhook
+              return {
+                id,
+                name,
+                resource,
+                targetUrl,
+              }
+            })
+            this.$set(this.ui.tabs.webhooks, 'webhookData', list);
+            this.ui.tabs.webhooks.loading = false
+          },
+          async registerWebhook() {
+            const {
+              url,
+              secret
+            } = this.ui.tabs.webhooks.webhooksForm
+            this.ui.tabs.webhooks.showModal = false
+            try {
+              await this.client.Setup(url, secret)
+              await this.fetchSetWebhooks()
+            } catch (e) {
+              alert(e)
+              console.log("##", e)
+            }
+          },
+          async destroyWebhooks() {
+            this.ui.tabs.webhooks.loading = true
+            const targetList = this.ui.tabs.webhooks?.webhookData.map(({
+              id
+            }) => id) || [];
+            await Promise.all(targetList.map((id) => this.client.deleteWebhook(id)));
+            this.$set(this.ui.tabs.webhooks, 'webhookData', []);
+            this.ui.tabs.webhooks.confirmDeleteActive = false
+            this.ui.tabs.webhooks.loading = false
+          }
+        },
+        mounted() {
+          this.selectTab('token');
+        },
+      });
+      fadeIn(document.getElementById("garageContent"), 1000);
+    }
+    // non-reactive locale sheets
+    function locales() {
+      /* Opts
+        ar: Arabic
+        zh: Chinese (Simplified)
+        de: German
+        es: Spanish
+        en: English
+        fr: French
+        hi: Hindi
+        ja: Japanese
+        pt: Portuguese
+        ru: Russian
+        uk: Ukrainian
+        ur: Urdu (Pakistan)
+      */
+      return {
+        en: {
+          ui: {
+            title: 'speedybot garage 🔧🤖'
+          },
+          rooms: {
+            subtitle: `Fetch most recent rooms, see <a href="https://developer.webex.com/docs/api/v1/rooms/list-rooms" target="_blank">for details</a>`,
+          },
+          token: {
+            navLabel: '🔑 Token (start here)',
+            subtitle: `Enter your bot's <a href="https://developer.webex.com/docs/getting-your-personal-access-token" target="_blank">access token</a> to get started:`,
+            placeholder: "Enter token (ex. MWYVMTktNTJiMjdkN2E4...)",
+            error: `Token is invalid 😥 (generate a new token and try again) Get a token <a href="https://developer.webex.com/my-apps/new/bot" target="_blank" class="is-info">here</a>`,
+            table: {}
+          },
+        },
+        ar: {
+          ui: {
+            title: 'جراج سبيديبوت 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 الرمز (ابدأ من هنا)',
+          },
+        },
+        de: {
+          ui: {
+            title: 'speedybot-Garage 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 Token (starten Sie hier)',
+          },
+        },
+        es: {
+          ui: {
+            title: 'garaje speedybot 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 Token (comienza aquí)',
+          },
+        },
+        fr: {
+          ui: {
+            title: 'garage speedybot 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 Jeton (commencez ici)',
+          },
+        },
+        hi: {
+          ui: {
+            title: 'speedybot गेराज 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 टोकन (यहां से शुरू करें)',
+          },
+        },
+        ja: {
+          ui: {
+            title: 'スピーディーボットガレージ 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 トークン (ここから始める)',
+          },
+        },
+        pt: {
+          ui: {
+            title: 'garagem speedybot 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 Token (comece aqui)',
+          },
+        },
+        ru: {
+          ui: {
+            title: 'гараж Спидибот 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 Токен (начните здесь)',
+          },
+        },
+        uk: {
+          ui: {
+            title: 'гараж speedybot 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 Токен (почніть тут)',
+          },
+        },
+        ur: {
+          ui: {
+            title: 'سپیڈی بوٹ گیراج 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 ٹوکن (یہاں سے شروع کرو)',
+          },
+        },
+        zh: {
+          ui: {
+            title: '速度机器人车库 🔧🤖'
+          },
+          token: {
+            navLabel: '🔑 令牌 (从这里开始)',
+          },
+        },
+      }
+    }
+    // hoisty api client
+    function client(token) {
+      class SpeedybotBrowser {
+        constructor(token) {
+          this._token = token
+          this.API = {
+            getMessage_Details: "https://webexapis.com/v1/messages",
+            getAttachmentDetails: "https://webexapis.com/v1/attachment/actions",
+            getMembershipDetails: "https://webexapis.com/v1/memberships",
+            getPersonDetails: "https://webexapis.com/v1/people",
+            sendMessage: "https://webexapis.com/v1/messages",
+            createWebhook: "https://webexapis.com/v1/webhooks",
+            deleteWebhook: `https://webexapis.com/v1/webhooks`,
+            getWebhooks: "https://webexapis.com/v1/webhooks",
+            getSelf: "https://webexapis.com/v1/people/me",
+            deleteMessage: "https://webexapis.com/v1/messages",
+            rooms: "https://webexapis.com/v1/rooms"
+          };
+        }
+        setToken(token) {
+          this._token = token
+        }
+        getToken() {
+          return this._token
+        }
+        Setup(url, secret) {
+          return Promise.all([
+            this.createFirehose(url, secret),
+            this.createAttachmentActionsWebhook(url, secret),
+          ]).catch(e => {
+            throw e
+          })
+        }
+        async recentRooms(limit = 100) {
+          const url = `${this.API.rooms}?max=${limit}&sortBy=lastactivity`;
+          const res = (await this.makeRequest(
+            url, {}, {
+              method: "GET",
+              token: this.getToken(),
+            }
+          ));
+          const json = (await res.json());
+          return json.items.map(item => {
+            const {
+              type,
+              title,
+              id
+            } = item
+            return {
+              type,
+              title,
+              id,
+            };
+          })
+        }
+        async getWebhooks() {
+          const url = `${this.API.getWebhooks}`;
+          const res = (await this.makeRequest(
+            url, {}, {
+              method: "GET",
+              token: this.getToken(),
+            }
+          ));
+          const json = (await res.json());
+          return json
+        }
+        async createAttachmentActionsWebhook(url, secret) {
+          const payload = {
+            resource: 'attachmentActions',
+            event: 'created',
+            targetUrl: url,
+            name: `${new Date().toISOString()}_attachmentActions`,
+          }
+          if (secret) {
+            payload.secret = secret
+          }
+          return this.createWebhook(payload)
+        }
+        async createFirehose(
+          url,
+          secret,
+        ) {
+          const payload = {
+            resource: 'all',
+            event: 'all',
+            targetUrl: url,
+            name: `${new Date().toISOString()}_firehose`,
+          }
+          if (secret) {
+            payload.secret = secret
+          }
+          return this.createWebhook(payload)
+        }
+        async createWebhook(payload) {
+          const url = `${this.API.createWebhook}`;
+          const res = (await this.makeRequest(
+            url, payload, {
+              method: "POST",
+              token: this.getToken(),
+            }
+          ));
+          const json = (await res.json());
+          return json
+        }
+        sendRoom(roomId, messagePayload) {}
+        dm(dm, messagePayload) {}
+        async deleteWebhook(id) {
+          const url = `https://webexapis.com/v1/webhooks/${id}`
+          const res = (await this.makeRequest(
+            url, {}, {
+              method: "DELETE",
+              token: this.getToken(),
+            }
+          ));
+          return res
+        }
+        async validateToken(token, fullRes = false) {
+          const res = await this.getSelf(token)
+          const valid = !('errors' in res)
+          return {
+            valid,
+            ...res
+          }
+        }
+        async getSelf() {
+          const url = this.API.getSelf;
+          const res = (await this.makeRequest(
+            url, {}, {
+              method: "GET",
+              token: this.getToken(),
+            }
+          ));
+          const json = (await res.json());
+          return json;
+        }
+        async makeRequest(url, body, opts = {}) {
+          const defaultConfig = {
+            method: "POST",
+            "content-type": "application/json;charset=UTF-8",
+            raw: false,
+          };
+          const contentType = opts["content-type"] || defaultConfig["content-type"];
+          const init = {
+            method: opts.method ? opts.method : defaultConfig.method,
+            headers: Object.assign({
+              "content-type": contentType,
+              Authorization: `Bearer ${opts.token}`
+            }, (opts.headers || {})),
+          };
+          if (opts.method === "POST") {
+            init.body = opts.raw ? body : JSON.stringify(body);
+          }
+          const response = await fetch(url, init);
+          return response;
+        }
+      }
+      return new SpeedybotBrowser('a')
+    }
+    window.onload = () => document.getElementById("rootTokenRef").focus();
+  </script>
+  <style>
+    li {
+      transition: opacity 1.65s;
+    }
+
+    .disabled {
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .enabled {
+      opacity: 1;
+      animation-delay: 0s;
+      transform: translateY(0%);
+    }
+
+    .enabled:nth-child(0) {
+      /*   animation: bounce 0.8s ease-in-out forwards; */
+    }
+
+    .enabled:nth-child(2) {
+      animation: bounce 0.6s ease-in-out forwards;
+    }
+
+    .enabled:nth-child(3) {
+      animation: bounce 1.2s ease-in-out forwards;
+    }
+
+    .enabled:nth-child(4) {
+      animation: bounce 0.8s ease-in-out forwards;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      20%,
+      50%,
+      80%,
+      100% {
+        transform: translateY(0);
+      }
+
+      40% {
+        transform: scale(1.5);
+      }
+
+      60% {
+        transform: translateY(-8px);
+      }
+    }
+  </style>
+</body>
+
+</html>
