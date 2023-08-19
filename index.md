@@ -32,7 +32,7 @@ features:
 
 <CustomComponent name="what" />
 <hr/>
-<CustomComponent name="what" />
+<CustomComponent />
 
 investigations:
 
