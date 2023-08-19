@@ -20,21 +20,18 @@ const count = ref(0)
 const token = ref('beer')
 </script>
 
-<hr/>
 Countaer is {{ count }}<br/>
 Token is {{ token }}
 
+<hr/>
+
 <BoundInput @valChange="token = $event"/>
-
-<!-- <CustomComponent :name="token" /> -->
-
-<button @click="token='aaa'">DO IT</button>
 
 ## Garage
 
 {{ token }}
 
-```html--vue
+```html-vue
 <pre>T: {{ token }}</pre>
 <!-- stylesheet -->
 <link rel="stylesheet" href="https://mycdn.com/css/{{ token }}/style.min.css" />
