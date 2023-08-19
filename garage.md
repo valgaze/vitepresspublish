@@ -24,9 +24,7 @@ const token = ref('beer')
 Countaer is {{ count }}<br/>
 Token is {{ token }}
 
-<BoundInput
-v-bind:value="token"
-@bongo="token = $event"/>
+<BoundInput @bongo="token.value = $event"/>
 
 <!-- <CustomComponent :name="token" /> -->
 
@@ -64,13 +62,13 @@ async function main(token: string, target: string) {
 main(target, token);
 ```
 
-```js [config.js]
+```js-vue [config.js]
 // npm i speedybot@latest
 // node script.js
 const { Speedybot } = require("speedybot");
 
 const target = "myEmail@joe.com";
-const token = "aaabbbcccdddee";
+const token = "{{token}}"
 
 async function main(token, target) {
   const Bot = new Speedybot(token);

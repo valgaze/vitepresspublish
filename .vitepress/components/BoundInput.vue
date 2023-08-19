@@ -3,7 +3,7 @@
   <input
     type="text"
     class="good-one"
-    @input="onInput($event.target.value)"
+    @input="onInput($event)"
     :value="value || ''"
   />
 </template>
