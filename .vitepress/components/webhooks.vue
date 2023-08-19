@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import { Speedybot } from "speedybot-mini";
+import { Speedybot } from "./../../fakesrc/index";
 
-const boom = new Speedybot();
-console.log("#", boom.contains);
+const boom = new Speedybot("xxxx" + Math.random());
+console.log("#", boom.getToken());
 export default {
   props: {
     name: {
