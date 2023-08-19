@@ -11,6 +11,24 @@ export default defineConfig({
       provider: "local",
     },
     nav: [
+      {
+        text: "🚀 Quickstarts",
+        items: [
+          {
+            text: "λ Deploy to AWS Lamda",
+            link: "./../examples/lambda/README.md",
+          },
+          {
+            text: "🔥 Deploy to Worker",
+            link: "./../examples/worker/README.md",
+          },
+          {
+            text: "🦖 Deploy to Deno",
+            link: "./../examples/deno/README.md",
+          },
+          { text: "💬 Messsages", link: "/garage" },
+        ],
+      },
       { text: "🏡 Home", link: "/" },
       { text: "🌟 Examples", link: "/markdown-examples" },
       { text: "📚 API Docs", link: "/api-docs/modules" },
@@ -27,10 +45,28 @@ export default defineConfig({
           { text: "🔧 Garage", link: "/garage" },
         ],
       },
+      {
+        text: "🚀 Quickstarts",
+        items: [
+          {
+            text: "λ Deploy to AWS Lamda",
+            link: "./../examples/lambda/README.md",
+          },
+          {
+            text: "🔥 Deploy to Worker",
+            link: "./../examples/worker/README.md",
+          },
+          {
+            text: "🦖 Deploy to Deno",
+            link: "./../examples/deno/README.md",
+          },
+          { text: "💬 Messsages", link: "/garage" },
+        ],
+      },
     ],
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
+      { icon: "github", link: "https://github.com/valgaze/speedybot" },
     ],
   },
 });

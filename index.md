@@ -6,6 +6,9 @@ hero:
   name: "Publish Test"
   text: ""
   tagline: Effortless + essential conversation design tooling
+  image:
+    src: /logo.gif
+    alt: Speedybot
   actions:
     - theme: brand
       text: Markdown Examples
@@ -17,12 +20,12 @@ hero:
       text: API Docs
       link: /api-docs/modules
 features:
-  - title: Feature A
+  - title: Zero dependencies
+    details: Written in typescript, no de
+  - title: Run it anywhere
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Speedycard builder
+    details: Never again wrangle JSON and build rich interactive cards/forms with ease
 ---
 
 <!--@include: ./README.md-->

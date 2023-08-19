@@ -1,0 +1,26 @@
+{
+  "name": "express-incoming-webhook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsnd --respawn --watch src,settings src/index",
+    "start": "ts-node src/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^8.10.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.17.1",
+    "speedybot-mini": "^2.0.3"
+  }
+}
