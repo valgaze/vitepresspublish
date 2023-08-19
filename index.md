@@ -25,3 +25,12 @@ features:
   - title: Feature C
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
+
+<script setup>
+  import CustomComponent from './.vitepress/components/webhooks.vue'
+</script>
+
+<CustomComponent name="what" />
+investigations:
+  - [x] vue component w/ pathing
+  - vue component that uses speedybot w/ pathing
