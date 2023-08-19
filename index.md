@@ -16,7 +16,6 @@ hero:
     - theme: alt
       text: API Docs
       link: /api-docs/modules
-
 features:
   - title: Feature A
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
@@ -26,15 +25,4 @@ features:
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
-<script setup>
-  import CustomComponent from './.vitepress/components/webhooks.vue'
-</script>
-
-<CustomComponent name="what" />
-<hr/>
-<CustomComponent />
-
-investigations:
-
-- [x] vue component w/ pathing
-- vue component that uses speedybot w/ pathing
+<!--@include: ./README.md-->

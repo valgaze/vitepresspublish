@@ -14,6 +14,7 @@ export default defineConfig({
       { text: "🏡 Home", link: "/" },
       { text: "🌟 Examples", link: "/markdown-examples" },
       { text: "📚 API Docs", link: "/api-docs/modules" },
+      { text: "🔧 Garage", link: "/garage" },
     ],
 
     sidebar: [
@@ -23,6 +24,7 @@ export default defineConfig({
           { text: "Markdown Examples", link: "/markdown-examples" },
           { text: "Runtime API Examples", link: "/api-examples" },
           { text: "API Docs", link: "/api-docs/modules" },
+          { text: "🔧 Garage", link: "/garage" },
         ],
       },
     ],

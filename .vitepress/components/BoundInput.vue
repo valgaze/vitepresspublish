@@ -1,51 +1,24 @@
+# CustomInput.vue
 <template>
-  <div class="hero">
-    <input
-      class="good-one"
-      type="text"
-      placeholder="hooo-doggy"
-      id="rootTokenRef"
-      v-model="token"
-      autofocus
-    />
-
-    <div class="hero-body">
-      <div class="container" v-if="token">
-        <h1 class="title">Hey, I'm {{ name }}.</h1>
-      </div>
-    </div>
-  </div>
+  <input
+    type="text"
+    class="good-one"
+    @input="onInput($event.target.value)"
+    :value="value || ''"
+  />
 </template>
 
 <script>
-import { Speedybot } from "./../../fakesrc/index";
-
-const boom = new Speedybot("xxxx" + Math.random());
-console.log("#", boom.getToken());
 export default {
-  data() {
-    return {
-      token: "",
-    };
-  },
-  props: {
-    name: {
-      type: String,
-      required: false,
-      default() {
-        return `Hello bongo ${Math.random()}`;
-      },
+  props: ["value"],
+  methods: {
+    onInput(event) {
+      this.$emit("bongo", event.target.value);
     },
   },
 };
 </script>
-
-<style>
-h2.subtitle {
-  font-size: 1.2rem;
-  border-top: none;
-}
-
+<style module>
 .good-one {
   font-size: 1.5rem;
   box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);
