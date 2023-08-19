@@ -21,7 +21,6 @@
 import { Speedybot } from "./../../fakesrc/index";
 
 const boom = new Speedybot("xxxx" + Math.random());
-console.log("#", boom.getToken());
 export default {
   data() {
     return {

@@ -2,7 +2,7 @@
 <template>
   <input
     type="text"
-    class="good-one"
+    class="good-one dark-mode"
     @input="onInput($event)"
     :value="value || ''"
   />
@@ -14,13 +14,17 @@ const Bot = new Speedybot();
 export default {
   props: ["value"],
   methods: {
-    onInput(event) {
+    async onInput(event) {
       try {
+        const val = event.target.value;
+        this.$emit("valChange", val);
         Bot.addSecret("x", Math.random());
-        this.$emit("bongo", event.target.value);
-        console.log("#>>>#", Bot.getSecret("x"));
+        Bot.setToken(val);
+        console.log("about to fure..");
+        const wh = await Bot.getWebhooks();
+        console.log("#>>>#", wh);
       } catch (e) {
-        console.log("#", e);
+        console.log("omge", e);
       }
     },
   },
@@ -56,5 +60,13 @@ export default {
   border-color: #dbdbdb;
   border-radius: 4px;
   color: #363636;
+}
+
+.dark-mode {
+  /* Dark mode styles */
+  background-color: #363636;
+  border-color: #1a1a1a;
+  color: #fff;
+  box-shadow: inset 0 0.0625em 0.125em rgba(255, 255, 255, 0.05);
 }
 </style>
