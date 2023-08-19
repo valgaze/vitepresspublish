@@ -22,9 +22,11 @@ investigations:
 - [x] load external library
 - super-dooper global state possible? hook into dark mode for componentss?
   - How do I get access to dark-mode?
-- how does it look deployed
+- how does it look deployed on js
+-
 
-Other misc bullshit:
+Other misc items:
 
 - @include readme no formatting?
-- Can i do sub-nav on sidebar?
+- [x] Can i do sub-nav on sidebar?
+-
