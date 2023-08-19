@@ -4,3 +4,6 @@ deploy/
 dist/
 run.sh
 .env
+
+.vitepress/cache
+.vitepress/dist
