@@ -15,7 +15,7 @@ export default {
       type: String,
       required: false,
       default() {
-        `Hello bongo ${Math.random()}`;
+        return `Hello bongo ${Math.random()}`;
       },
     },
   },
