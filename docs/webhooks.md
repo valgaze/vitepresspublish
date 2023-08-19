@@ -23,7 +23,7 @@ If you add a secret when creating a webhook on each incoming request will receiv
 
 **Bottom line:** DO THIS. With your webhook secret you can take SHA-1 representation of the request body and if it matches the signature on the header proceed otherwise simply discard the request.
 
-Note: All of the samples in the **[examples directory](./../examples/)** of this repo have reference implementations of validating webhooks appropriate to each platform
+Note: All of the samples in the **[examples directory](./../examples/README.md)** of this repo have reference implementations of validating webhooks appropriate to each platform
 
 ## Reference implementations
 
