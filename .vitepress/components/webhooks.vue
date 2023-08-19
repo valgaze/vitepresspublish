@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import { Speedybot } from "./../../../newshack/src/index";
+import { Speedybot } from "speedybot-mini";
 
 const boom = new Speedybot();
-console.log("#", boom.card().addTitle("yay").addSubtitle("booyah"));
+console.log("#", boom.contains);
 export default {
   props: {
     name: {
