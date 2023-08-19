@@ -31,6 +31,10 @@ features:
 </script>
 
 <CustomComponent name="what" />
+<hr/>
+<CustomComponent name="what" />
+
 investigations:
-  - [x] vue component w/ pathing
-  - vue component that uses speedybot w/ pathing
+
+- [x] vue component w/ pathing
+- vue component that uses speedybot w/ pathing
