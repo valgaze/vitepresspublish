@@ -7,6 +7,9 @@ export default defineConfig({
   description: "Coming soon",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    search: {
+      provider: "local",
+    },
     nav: [
       { text: "🏡 Home", link: "/" },
       { text: "🌟 Examples", link: "/markdown-examples" },
