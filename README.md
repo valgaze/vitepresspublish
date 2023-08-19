@@ -30,3 +30,10 @@ Other misc items:
 - @include readme no formatting?
 - [x] Can i do sub-nav on sidebar?
 -
+
+Host project needs:
+.vitepress
+github pages hosting
+.github/deploy.yml
+.gitignore for vitepress
+package.json: scripts + depependencies

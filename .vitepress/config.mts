@@ -15,16 +15,12 @@ export default defineConfig({
         text: "🚀 Quickstarts",
         items: [
           {
-            text: "λ Deploy to AWS Lamda",
-            link: "./../examples/lambda/README.md",
-          },
-          {
-            text: "🔥 Deploy to Worker",
-            link: "./../examples/worker/README.md",
-          },
-          {
             text: "🦖 Deploy to Deno",
-            link: "./../examples/deno/README.md",
+            link: "./examples/deno/README.md",
+          },
+          {
+            text: "💻 Deploy to Boring 'ol server Webhook/websockets",
+            link: "./examples/express-incoming-webhook/README.md",
           },
           { text: "💬 Messsages", link: "/garage" },
         ],
@@ -33,6 +29,7 @@ export default defineConfig({
       { text: "🌟 Examples", link: "/markdown-examples" },
       { text: "📚 API Docs", link: "/api-docs/modules" },
       { text: "🔧 Garage", link: "/garage" },
+      { text: "🐣 Webhooks for Babies", link: "/webhooks_for_babies.md" },
     ],
 
     sidebar: [
@@ -43,23 +40,31 @@ export default defineConfig({
           { text: "Runtime API Examples", link: "/api-examples" },
           { text: "API Docs", link: "/api-docs/modules" },
           { text: "🔧 Garage", link: "/garage" },
+          { text: "🐣 Webhooks for Babies", link: "/webhooks_for_babies.md" },
         ],
       },
       {
         text: "🚀 Quickstarts",
+        collapsed: true,
+
         items: [
           {
+            text: "🦖 Deploy to Deno",
+            link: "./examples/deno/README.md",
+          },
+          {
+            text: "💻 Deploy to Boring 'ol server Webhook/websockets",
+            link: "./examples/express-incoming-webhook/README.md",
+          },
+          {
             text: "λ Deploy to AWS Lamda",
-            link: "./../examples/lambda/README.md",
+            link: "./examples/lambda/README.md",
           },
           {
             text: "🔥 Deploy to Worker",
-            link: "./../examples/worker/README.md",
+            link: "./examples/worker/README.md",
           },
-          {
-            text: "🦖 Deploy to Deno",
-            link: "./../examples/deno/README.md",
-          },
+
           { text: "💬 Messsages", link: "/garage" },
         ],
       },
