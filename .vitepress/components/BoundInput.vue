@@ -9,11 +9,19 @@
 </template>
 
 <script>
+import { Speedybot } from "speedybot";
+const Bot = new Speedybot();
 export default {
   props: ["value"],
   methods: {
     onInput(event) {
-      this.$emit("bongo", event.target.value);
+      try {
+        Bot.addSecret("x", Math.random());
+        this.$emit("bongo", event.target.value);
+        console.log("#>>>#", Bot.getSecret("x"));
+      } catch (e) {
+        console.log("#", e);
+      }
     },
   },
 };

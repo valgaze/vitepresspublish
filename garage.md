@@ -24,7 +24,7 @@ const token = ref('beer')
 Countaer is {{ count }}<br/>
 Token is {{ token }}
 
-<BoundInput @bongo="token.value = $event"/>
+<BoundInput @bongo="token = $event"/>
 
 <!-- <CustomComponent :name="token" /> -->
 
