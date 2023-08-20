@@ -10,6 +10,8 @@ hero:
 ---
 
 <script setup>
+  import { useData } from 'vitepress'
+
   import CustomComponent from './.vitepress/components/webhooks.vue'
   import BoundInput from './.vitepress/components/BoundInput.vue'
 
@@ -18,10 +20,13 @@ import { ref } from 'vue'
 
 const count = ref(0)
 const token = ref('beer')
+const { isDark } = useData()
+
 </script>
 
 Countaer is {{ count }}<br/>
 Token is {{ token }}
+Is dark? {{ isDark }}
 
 <hr/>
 
@@ -80,11 +85,3 @@ main(target, token);
 ```
 
 :::
-
-investigations:
-
-- [x] vue component w/ pathing
-- [x] vue component that uses speedybot w/ pathing
-- input field
-- global state possible? hook into dark mode for componentss?
-- how does it look deployed
