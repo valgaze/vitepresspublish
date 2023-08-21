@@ -2,7 +2,8 @@
 <template>
   <input
     type="text"
-    class="good-one dark-mode"
+    class="good-one"
+    :class="{ 'dark-mode': isDark }"
     @input="onInput($event)"
     :value="value || ''"
   />
@@ -12,7 +13,7 @@
 import { Speedybot } from "speedybot";
 const Bot = new Speedybot();
 export default {
-  props: ["value"],
+  props: ["value", "isDark"],
   methods: {
     async onInput(event) {
       try {
@@ -63,7 +64,6 @@ export default {
 }
 
 .dark-mode {
-  /* Dark mode styles */
   background-color: #363636;
   border-color: #1a1a1a;
   color: #fff;
