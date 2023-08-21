@@ -58,7 +58,7 @@ export default defineConfig({
           },
           {
             text: "λ Deploy to AWS Lamda",
-            link: "/examples/lambda/README.md",
+            link: "/examples/aws-lambda/README.md",
           },
           {
             text: "🔥 Deploy to Worker",
