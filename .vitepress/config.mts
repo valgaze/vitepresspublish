@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: "/vitepresspublish", // repo name
+  base: "/vitepresspublish/", // repo name
   title: "New Release 2.0",
   description: "Coming soon",
   themeConfig: {
