@@ -29,11 +29,11 @@ Other misc items:
 
 - @include readme no formatting?
 - [x] Can i do sub-nav on sidebar?
--
+- dark/light mode change clears input lawl
 
 Host project needs:
-.vitepress
-github pages hosting
-.github/deploy.yml
-.gitignore for vitepress
-package.json: scripts + depependencies
+[x] .vitepress
+[x] github pages hosting
+[x] .github/deploy.yml
+[x].gitignore for vitepress
+[x] package.json: scripts + depependencies

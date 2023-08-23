@@ -32,6 +32,18 @@ export default {
 }
 ```
 
+## yo bon
+
+```js
+export default {
+  data() {
+    return {
+      msg: "Focused!", // [!code  focus]
+    };
+  },
+};
+```
+
 ## Custom Containers
 
 **Input**

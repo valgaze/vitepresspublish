@@ -5,6 +5,9 @@ export default defineConfig({
   base: "/vitepresspublish", // repo name
   title: "New Release 2.0",
   description: "Coming soon",
+  markdown: {
+    theme: "vitesse-dark",
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     search: {

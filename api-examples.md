@@ -6,6 +6,16 @@ outline: deep
 
 Adaptive Cards are great but unwiedly and annoying.
 
+```js
+export default {
+  data() {
+    return {
+      msg: "Highlighted!", // [!code  hl]
+    };
+  },
+};
+```
+
 Speedycard makes it easy
 ::: code-group
 

@@ -1,8 +1,7 @@
-# CustomInput.vue
 <template>
   <input
     type="text"
-    class="good-one"
+    class="input-field"
     :class="{ 'dark-mode': isDark }"
     @input="onInput($event)"
     :value="value || ''"
@@ -10,8 +9,6 @@
 </template>
 
 <script>
-import { Speedybot } from "speedybot";
-const Bot = new Speedybot();
 export default {
   props: ["value", "isDark"],
   methods: {
@@ -19,11 +16,6 @@ export default {
       try {
         const val = event.target.value;
         this.$emit("valChange", val);
-        Bot.addSecret("x", Math.random());
-        Bot.setToken(val);
-        console.log("about to fure..");
-        const wh = await Bot.getWebhooks();
-        console.log("#>>>#", wh);
       } catch (e) {
         console.log("omge", e);
       }
@@ -31,36 +23,29 @@ export default {
   },
 };
 </script>
-<style module>
-.good-one {
-  font-size: 1.5rem;
-  box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);
-  max-width: 100%;
-  width: 100%;
-  -moz-appearance: none;
-  -webkit-appearance: none;
+<style>
+.input-field {
   align-items: center;
-  border: 1px solid transparent;
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
   border-radius: 4px;
-  box-shadow: none;
+  box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);
+  color: #363636;
   display: inline-flex;
+  font-family: "Inter", sans-serif;
   font-size: 1rem;
   height: 2.5em;
   justify-content: flex-start;
   line-height: 1.5;
-  padding-bottom: calc(0.5em - 1px);
-  padding-left: calc(0.75em - 1px);
-  padding-right: calc(0.75em - 1px);
-  padding-top: calc(0.5em - 1px);
+  max-width: 100%;
+  padding: calc(0.5em - 1px) calc(0.75em - 1px);
   position: relative;
   vertical-align: top;
-  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica,
-    Arial, sans-serif;
-  background-color: #fff;
-  border-color: #dbdbdb;
-  border-radius: 4px;
-  color: #363636;
+  width: 100%;
+  transition: background-color 0.3s cubic-bezier(0.2, 0.8, 0.4, 1),
+    border-color 0.3s cubic-bezier(0.2, 0.8, 0.4, 1),
+    color 0.3s cubic-bezier(0.2, 0.8, 0.4, 1),
+    box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.4, 1);
 }
 
 .dark-mode {

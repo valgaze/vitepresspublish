@@ -30,7 +30,7 @@ Is dark? {{ isDark }}
 
 <hr/>
 
-<BoundInput :isDark="isDark" @valChange="token = $event"/>
+<BoundInput :isDark="isDark" @valChange="token = $event" :value="token"/>
 
 ## Garage
 
