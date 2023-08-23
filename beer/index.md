@@ -1,32 +1,32 @@
 hell yar
-hmm?<Beer label="Hey look a button" severity="success"/>
 
-{{ damn }}
-<texarea v-model="damn" />
+<!-- hmm?<Beer label="Hey look a button" severity="success"/> -->
+
+<textarea v-model="THE_CODE_I_WANT" class="ta" rows=5></textarea>
+
+<textarea v-if="cardData" v-model="cardData" class="ta" rows=5></textarea>
 
 <script setup>
-import { ref } from 'vue'
-import { useData } from 'vitepress'
-const { isDark } = useData()
-const token = ref('token_r')
-const isLoading = ref(false)
-const damn = ref('')
-
-import Comps from './comps.vue'
-import StyledInput from './StyledInput.vue'
-import Beer from "primevue/button";
+import { Speedybot } from 'speedybot'
+import { ref, watch} from 'vue'
+const cardData = null
+const THE_CODE_I_WANT = ref(`Bot.card().addTitle('hi')`)
 
 setTimeout(x => {
     isLoading.value = true
 }, 4700)
 
+watch(THE_CODE_I_WANT, (newData, oldData) => {
+  
+try {
+    const Bot = new Speedybot()
+    const final = `const Bot = new Speedybot();\n${newData}`; // Inject Bot declaration
+    const HELP_ME = eval(final);
+    console.log("#", HELP_ME)
+    const cardData = HELP_ME.build()
+    console.log("Nooo bru", cardData)
+    } catch(e) {
+        console.log("#",e)
+    }
+});
 </script>
-
-{{ token }}
-<StyledInput
-:isLoading="isLoading"
-:isDark="isDark"
-@valChange="token = $event"
-:value="token"/>
-
-<Comps />
