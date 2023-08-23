@@ -16,7 +16,8 @@
     "vitepress": "^1.0.0-rc.4"
   },
   "dependencies": {
-    "speedybot": "^2.0.0-beta.1",
-    "primevue": "^3.32.0"
+    "monaco-editor": "^0.41.0",
+    "primevue": "^3.32.0",
+    "speedybot": "^2.0.0-beta.1"
   }
 }

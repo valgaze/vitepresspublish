@@ -1,7 +1,7 @@
 hell yar
 
 <!-- hmm?<Beer label="Hey look a button" severity="success"/> -->
-<!-- <MonacoEditor /> -->
+<MonacoEditor />
 
 <textarea v-model="THE_CODE_I_WANT" class="ta" rows=5></textarea>
 
@@ -10,7 +10,7 @@ hell yar
 <script setup>
 import { Speedybot } from 'speedybot'
 import { ref, watch} from 'vue'
-// import MonacoEditor from './monaco.vue'
+import MonacoEditor from './monaco.vue'
 const cardData = null
 const THE_CODE_I_WANT = ref(`Bot.card().addTitle('hi')`)
 const isLoading = ref(false)

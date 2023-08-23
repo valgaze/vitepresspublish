@@ -1,12 +1,40 @@
 <template>
   <div>
-    <div ref="editor" style="width: 800px; height: 600px"></div>
+    <div ref="editor" id="boomy" style="width: 800px; height: 600px"></div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import * as monaco from "monaco-editor";
+import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
+import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
+import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
+import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === "json") {
+      return new jsonWorker();
+    }
+    if (label === "css" || label === "scss" || label === "less") {
+      return new cssWorker();
+    }
+    if (label === "html" || label === "handlebars" || label === "razor") {
+      return new htmlWorker();
+    }
+    if (label === "typescript" || label === "javascript") {
+      return new tsWorker();
+    }
+    return new editorWorker();
+  },
+};
+
+// monaco.editor.create(document.getElementById('container'), {
+//   value: "function hello() {\n\talert('Hello world!');\n}",
+//   language: 'javascript'
+// })
 
 const editorRef = ref(null);
 
@@ -70,7 +98,8 @@ onMounted(() => {
     "filename/facts.d.ts"
   );
 
-  const editor = monaco.editor.create(editorRef.value, {
+  //   const editor = monaco.editor.create(editorRef.value, {
+  const editor = monaco.editor.create(document.querySelector("#boomy"), {
     value: `const Bot = new Speedybot()
 const card = Bot.card().addTitle('My title').addSubtitle('woot')
 
