@@ -10,7 +10,13 @@ hell yar
 <script setup>
 import { Speedybot } from 'speedybot'
 import { ref, watch} from 'vue'
-import MonacoEditor from './monaco.vue'
+import { defineAsyncComponent } from 'vue';
+import { inBrowser } from 'vitepress';
+
+const MonacoEditor = inBrowser
+  ? defineAsyncComponent(() => import('./monaco.vue'))
+  : () => null;
+
 const cardData = null
 const THE_CODE_I_WANT = ref(`Bot.card().addTitle('hi')`)
 const isLoading = ref(false)

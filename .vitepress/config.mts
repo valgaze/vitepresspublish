@@ -77,5 +77,9 @@ export default defineConfig({
       { icon: "github", link: "https://github.com/valgaze/speedybot" },
     ],
   },
-  vite: {},
+  vite: {
+    ssr: {
+      noExternal: ["monaco-editor"],
+    },
+  },
 });
