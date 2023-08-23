@@ -37,3 +37,7 @@ Host project needs:
 [x] .github/deploy.yml
 [x].gitignore for vitepress
 [x] package.json: scripts + depependencies
+
+Component I think we need
+
+Big fancy submit buttons

@@ -1,7 +1,6 @@
 <template>
   <div :class="['input-container', isDark ? 'is-dark' : '', buttonClass]">
-    {{ selectedOptions }}
-    {{ inputValue }}
+    <!-- hmm?<Beer label="Check" icon="pi pi-check" /> -->
     <input
       v-if="type === 'text'"
       type="text"
@@ -52,7 +51,12 @@
 </template>
 
 <script>
+// import Beer from "primevue/button";
+
 export default {
+  components: {
+    // Beer,
+  },
   props: {
     type: String, // 'text', 'textarea', 'radio', 'multi-select', or 'button'
     placeholder: String,
