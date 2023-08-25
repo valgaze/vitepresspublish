@@ -3,6 +3,16 @@ hell yar
 <!-- hmm?<Beer label="Hey look a button" severity="success"/> -->
 <MonacoEditor />
 
+<br />
+<el-row class="mb-4">
+  <el-button>Default</el-button>
+  <el-button type="primary">Primary</el-button>
+  <el-button type="success">Success</el-button>
+  <el-button type="info">Info</el-button>
+  <el-button type="warning">Warning</el-button>
+  <el-button type="danger">Danger</el-button>
+</el-row>
+
 <textarea v-model="THE_CODE_I_WANT" class="ta" rows=5></textarea>
 
 <textarea v-if="cardData" v-model="cardData" class="ta" rows=5></textarea>
