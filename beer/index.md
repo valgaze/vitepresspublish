@@ -2,7 +2,7 @@ hell yar
 
 <!-- hmm?<Beer label="Hey look a button" severity="success"/> -->
 <MonacoEditor />
-
+<AdaptiveCardRender />
 <br />
 <el-row class="mb-4">
   <el-button>Default</el-button>
@@ -22,6 +22,7 @@ import { Speedybot } from 'speedybot'
 import { ref, watch} from 'vue'
 import { defineAsyncComponent } from 'vue';
 import { inBrowser } from 'vitepress';
+import AdaptiveCardRender from './../.vitepress/components/adaptivecard.vue'
 
 const MonacoEditor = inBrowser
   ? defineAsyncComponent(() => import('./monaco.vue'))

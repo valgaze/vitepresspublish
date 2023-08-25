@@ -28,4 +28,20 @@ features:
     details: Never again wrangle JSON and build rich interactive cards/forms with ease
 ---
 
+<el-tabs v-model="activeName" tab-position="left" class="demo-tabs" @tab-click="handleClick">
+<el-tab-pane label="Speedycard" name="first">User</el-tab-pane>
+<el-tab-pane label="JSON (output)" name="second">Config</el-tab-pane>
+</el-tabs>
+
+<script lang="ts" setup>
+import { ref } from 'vue'
+import type { TabsPaneContext } from 'element-plus'
+
+const activeName = ref('first')
+
+const handleClick = (tab: TabsPaneContext, event: Event) => {
+  console.log(tab, event)
+}
+</script>
+
 <!--@include: ./README.md-->
