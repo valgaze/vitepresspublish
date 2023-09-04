@@ -92,14 +92,14 @@ features:
 
 
 .VPHomeHero .name span{
-background: linear-gradient(120deg, rgb(0,123,255), rgb(30,200,125), rgb(220,20,60), rgb(0,123,255));
--webkit-background-clip: text;
-background-clip: text;
-color: transparent;
-background-size: 200% 200%;
-font: 900 80px/1 'Josefin Sans', sans-serif;
-letter-spacing: 2px;
-animation: Gradient 3s ease infinite;
+background: linear-gradient(120deg, rgb(0,123,255), rgb(30,200,125), rgb(220,20,60), rgb(0,123,255)) !important;
+-webkit-background-clip: text !important;
+background-clip: text !important;
+color: transparent !important;
+background-size: 200% 200% !important;
+font: 900 80px/1 'Josefin Sans', sans-serif !important;
+letter-spacing: 2px !important;
+animation: Gradient 3s ease infinite !important;
 }
 </style>
 
